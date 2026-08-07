@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} — Dragon Vault{% endblock %}
+{% block content %}
+<section class="error-page"><div class="error-mark">DV</div><span class="eyebrow">{{ code }}</span><h1>That page is not here.</h1><p>{{ message }}</p><a class="button primary" href="{{ url_for('home') }}">Return home <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Profile' if not public_view else profile_data.get('name', 'Profile') }} — Dragon Vault{% endblock %}
+{% block content %}
+<section class="profile-page">
+  {% if public_view %}
+  <a class="back-link" href="{{ url_for('home') }}"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to Dragon Vault</a>
+  <div class="public-profile"><div class="profile-avatar">{% if profile_data.get('imageUrl') %}<img src="{{ profile_data.imageUrl }}" alt="{{ profile_data.get('name', 'Admin') }}">{% else %}<img src="{{ url_for('static', filename='logo.svg') }}" alt="">{% endif %}</div><span class="eyebrow">DRAGON VAULT CREATOR</span><h1>{{ profile_data.get('name', 'Majid') }}</h1><p>{{ profile_data.get('bio', '') }}</p>{% if profile_data.get('htmlBio') %}<div class="rich-bio">{{ profile_data.htmlBio|safe }}</div>{% endif %}{% if profile_data.get('website') %}<a class="button secondary" href="{{ profile_data.website }}" target="_blank">Visit website</a>{% endif %}</div>
+  {% else %}
+  <div class="page-head"><div><span class="eyebrow">ADMIN PROFILE</span><h1>Profile settings</h1><p>Your public presence, kept simple and intentional.</p></div><a class="button secondary" href="{{ url_for('public_profile') }}" target="_blank">View public</a></div>
+  <form class="form-card profile-form" method="post" enctype="multipart/form-data">
+    <div class="profile-preview"><div class="profile-avatar">{% if profile_data.get('imageUrl') %}<img src="{{ profile_data.imageUrl }}" alt="">{% else %}<img src="{{ url_for('static', filename='logo.svg') }}" alt="">{% endif %}</div><div><strong>{{ profile_data.get('name', 'Majid') }}</strong><span>Dragon Vault creator</span></div></div>
+    <label>Profile image<input type="file" name="profile_image" accept=".png,.jpg,.jpeg,.webp"></label>
+    <label>Name<input name="name" value="{{ profile_data.get('name', 'Majid') }}"></label>
+    <label>Bio<textarea name="bio" rows="4" placeholder="Tell people what you create.">{{ profile_data.get('bio', '') }}</textarea></label>
+    <label>HTML bio<textarea class="code-editor small" name="htmlBio" spellcheck="false" rows="5" placeholder="<strong>Crafting useful web experiences.</strong>">{{ profile_data.get('htmlBio', '') }}</textarea></label>
+    <label>Website<input type="url" name="website" value="{{ profile_data.get('website', '') }}" placeholder="https://example.com"></label>
+    <label class="check-label"><input type="checkbox" name="public" {{ 'checked' if profile_data.get('public', True) }}> Show profile publicly</label>
+    <button class="button primary wide" type="submit">Save profile <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

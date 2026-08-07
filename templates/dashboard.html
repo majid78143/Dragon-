@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Vault dashboard — Dragon Vault{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div><span class="eyebrow">PRIVATE WORKSPACE</span><h1>Your vault</h1><p>Keep your web experiences organized, polished and ready to share.</p></div>
+  <a class="button primary" href="{{ url_for('new_asset') }}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New asset</a>
+</section>
+<section class="stats-grid">
+  <div class="stat"><span>Total assets</span><strong>{{ stats.total }}</strong><small>In your library</small></div>
+  <div class="stat"><span>Published</span><strong>{{ stats.published }}</strong><small>Live right now</small></div>
+  <div class="stat"><span>Drafts</span><strong>{{ stats.drafts }}</strong><small>Still in progress</small></div>
+</section>
+<section class="section compact-section">
+  <form class="search-row" method="get"><div class="search-input"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input name="q" value="{{ request.args.get('q', '') }}" placeholder="Search your assets"></div><select name="status" aria-label="Filter by status"><option value="">All status</option><option value="published" {{ 'selected' if request.args.get('status') == 'published' }}>Published</option><option value="draft" {{ 'selected' if request.args.get('status') == 'draft' }}>Drafts</option></select></form>
+  <div class="section-heading"><div><span class="eyebrow">ASSET LIBRARY</span><h2>{{ assets|length }} results</h2></div></div>
+  {% if assets %}
+  <div class="manage-list">
+    {% for asset in assets %}
+    <article class="manage-card">
+      <div class="asset-thumb"><span></span><span></span><span></span></div>
+      <div class="manage-main"><div class="manage-title"><h3>{{ asset.title }}</h3><span class="status {{ asset.status }}">{{ asset.status }}</span></div><p>{{ asset.category }} · {{ asset.file_count }} files · Updated {{ asset.updated_label }}</p><div class="manage-links"><a href="{{ url_for('asset_detail', slug=asset.slug) }}">Preview</a><a href="{{ url_for('asset_detail', slug=asset.slug) }}#embed">Embed link</a></div></div>
+      <div class="manage-actions"><a class="small-icon" href="{{ url_for('edit_asset', asset_id=asset.id) }}" aria-label="Edit asset"><svg viewBox="0 0 24 24"><path d="m4 16-.8 4.8L8 20l11-11a2.8 2.8 0 0 0-4-4L4 16Z"/></svg></a><form method="post" action="{{ url_for('toggle_asset', asset_id=asset.id) }}"><button class="small-icon" aria-label="Publish or unpublish"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></button></form><form method="post" action="{{ url_for('delete_asset', asset_id=asset.id) }}" data-confirm="Delete this asset permanently?"><button class="small-icon danger" aria-label="Delete asset"><svg viewBox="0 0 24 24"><path d="M5 7h14M10 11v6M14 11v6M8 7l1-3h6l1 3m2 0-.7 13H6.7L6 7"/></svg></button></form></div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><span class="empty-mark">DV</span><h3>No assets found</h3><p>Upload your first HTML experience to start building the library.</p><a class="button secondary" href="{{ url_for('new_asset') }}">Upload an asset</a></div>
+  {% endif %}
+</section>
+{% endblock %}

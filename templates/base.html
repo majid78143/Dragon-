@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7fb">
+  <title>{% block title %}Dragon Vault{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='logo.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('home') }}" aria-label="Dragon Vault home">
+        <img src="{{ url_for('static', filename='logo.svg') }}" alt="">
+        <span><strong>Dragon</strong> Vault</span>
+      </a>
+      {% if session.get('admin_authenticated') %}
+      <div class="topbar-actions">
+        <a class="icon-button" href="{{ url_for('profile') }}" aria-label="Open profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
+        </a>
+        <form method="post" action="{{ url_for('logout') }}"><button class="icon-button" aria-label="Logout" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M21 3v18"/></svg></button></form>
+      </div>
+      {% endif %}
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-stack">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+    <main>{% block content %}{% endblock %}</main>
+    {% if session.get('admin_authenticated') %}
+    <nav class="mobile-nav" aria-label="Admin navigation">
+      <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' else '' }}"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>Vault</span></a>
+      <a href="{{ url_for('new_asset') }}" class="{{ 'active' if request.endpoint == 'new_asset' else '' }}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Upload</span></a>
+      <a href="{{ url_for('profile') }}" class="{{ 'active' if request.endpoint == 'profile' else '' }}"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Profile</span></a>
+    </nav>
+    {% endif %}
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Dragon Vault — Web assets, ready to embed{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">YOUR WEB ASSET LIBRARY</span>
+    <h1>Build once.<br><em>Share anywhere.</em></h1>
+    <p>Upload complete HTML experiences, keep every supporting file together, and get a clean link ready for any website.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="{{ url_for('admin_login') }}">Open admin vault <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="button secondary" href="#recent">Browse published</a>
+    </div>
+  </div>
+  <div class="dragon-stage" aria-label="Animated dragon mark">
+    <div class="dragon-glow"></div>
+    <img class="dragon-art" src="{{ url_for('static', filename='dragon.svg') }}" alt="">
+    <span class="dragon-caption">DRAGON VAULT / 01</span>
+  </div>
+</section>
+<section class="feature-strip">
+  <div><span class="feature-index">01</span><strong>Package</strong><small>HTML, CSS, JS & media</small></div>
+  <div><span class="feature-index">02</span><strong>Preview</strong><small>Mobile-ready live view</small></div>
+  <div><span class="feature-index">03</span><strong>Embed</strong><small>One link, anywhere</small></div>
+</section>
+<section class="section" id="recent">
+  <div class="section-heading"><div><span class="eyebrow">PUBLIC LIBRARY</span><h2>Recently published</h2></div><span class="muted">{{ assets|length }} assets</span></div>
+  {% if assets %}
+  <div class="asset-grid">
+    {% for asset in assets %}
+    <a class="asset-card" href="{{ url_for('asset_detail', slug=asset.slug) }}">
+      <div class="asset-card-preview"><div class="preview-lines"><i></i><i></i><i></i></div><span class="preview-label">LIVE PREVIEW</span></div>
+      <div class="asset-card-body"><div><h3>{{ asset.title }}</h3><p>{{ asset.category }}</p></div><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><span class="empty-mark">DV</span><h3>Library is ready</h3><p>Published assets will appear here once your first experience goes live.</p></div>
+  {% endif %}
+</section>
+<footer class="footer"><span>Dragon Vault</span><span>Assets with intention.</span></footer>
+{% endblock %}
