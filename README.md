@@ -1,5 +1,10 @@
 # Dragon Vault — Self-hosting
 
+Dragon Vault can run without Firebase or any paid storage. By default it uses
+local storage under `data/` for uploaded files and asset metadata. Firebase is
+optional: if `FIREBASE_SERVICE_ACCOUNT_JSON` is configured, the original
+Firestore + Firebase Storage mode is used automatically.
+
 ## Included
 
 - `main.py` — Flask application
@@ -26,19 +31,22 @@ Copy the example file:
 cp .env.example .env
 ```
 
-Set these values in your hosting provider's secret/environment settings:
+Set these values in your environment settings:
 
 ```text
 ADMIN_EMAIL
 ADMIN_PASSWORD
-FIREBASE_SERVICE_ACCOUNT_JSON
 IMGBB_API_KEY
 FLASK_SECRET_KEY
 ```
 
-`FIREBASE_SERVICE_ACCOUNT_JSON` must contain the complete Firebase service-account JSON as one value. Do not put it in `static/`, `templates/`, or a public repository.
+For free local mode, only `ADMIN_EMAIL` and `ADMIN_PASSWORD` are needed.
+`FLASK_SECRET_KEY` is optional; the app also uses `SESSION_SECRET` when
+available. `FIREBASE_SERVICE_ACCOUNT_JSON` is optional.
+Never put a Firebase service-account JSON in `static/`, `templates/`, or a
+public repository.
 
-The Firebase web configuration is already in `static/firebase.js`, as requested. Enable these Firebase services:
+If Firebase is configured, enable these Firebase services:
 
 - Firestore Database
 - Firebase Storage
@@ -77,13 +85,17 @@ For a reverse proxy, forward the public domain to the Gunicorn port.
 /embed/<slug>           Embeddable asset
 ```
 
-## Firebase Storage and upload notes
+## Storage and upload notes
 
 - HTML, CSS, JavaScript, images, fonts, and ZIP packages are supported.
 - The maximum upload size is 60 MB.
-- Uploaded files are stored in Firebase Storage, not in the `static/` folder.
+- In free local mode, uploaded files are stored in `data/storage/` and metadata
+  is stored in `data/metadata.json`, not in the `static/` folder.
+- Set `DRAGON_DATA_DIR` if you want to keep the data in another directory.
 - Public assets are available only after publishing.
 - Draft/unpublished assets are visible to the authenticated admin only.
+- Keep a backup of `data/` when using temporary hosting; local disks can be
+  reset when a workspace or deployment is rebuilt.
 
 ## Security notes
 
